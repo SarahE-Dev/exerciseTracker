@@ -67,7 +67,7 @@ app.post('/api/users/:id/exercises', async (req, res)=>{
             description, duration, date
         }
         let updatedUser = await User.findByIdAndUpdate({_id: req.params.id}, newStuff, {new: true})
-        res.json({updatedUser})
+        res.json({"username": updatedUser.username, "description": updatedUser.description, "duration": updatedUser.duration, "date": updatedUser.date, "_id": updatedUser._id})
     } catch (error) {
         res.json({"error": error.message})
     }
