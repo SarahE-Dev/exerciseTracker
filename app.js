@@ -46,12 +46,15 @@ app.post('/api/users', async (req, res)=>{
         const newUser = new User({
             username
         })
-        await newUser.save()
-        
-        res.json({username:newUser.username, _id: newUser._id})
+        let savedUser = await newUser.save();
+        res.json({username: savedUser.username, _id: savedUser._id})
     } catch (error) {
-        res.json({"error": error.message})
+        
     }
+        
+        
+        
+    
 })
 
 app.get('/api/users', async (req, res)=>{
@@ -77,11 +80,11 @@ app.post('/api/users/:_id/exercises', async (req, res)=>{
         
         let updatedUser = await User.findByIdAndUpdate({_id: req.params._id}, newStuff, {new: true})
         let ObjectToSend = {
-            _id: updatedUser._id,
             username: updatedUser.username,
-            description: description,
-            duration: parseInt(duration),
-            date: date
+            description: updatedUser.description,
+            duration: parseInt(updatedUser.duration),
+            date: updatedUser.date,
+            _id: updatedUser._id
         }
         res.json(ObjectToSend)
     } catch (error) {
