@@ -59,7 +59,7 @@ app.get('/api/users', async (req, res)=>{
 
 })
 
-app.post('/api/users/:_id/exercises', async (req, res)=>{
+app.post('/api/users/:id/exercises', async (req, res)=>{
     try {
         const {description, duration, date} = req.body
         if(!date)date=new Date();
