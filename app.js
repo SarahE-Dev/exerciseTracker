@@ -47,7 +47,11 @@ app.post('/api/users', async (req, res)=>{
             username
         })
         await newUser.save()
-        res.json({username: newUser.username, _id: newUser._id})
+        let objectToSend = {
+            username: newUser.username,
+            _id: newUser._id
+        }
+        res.json(objectToSend)
     } catch (error) {
         res.json({"error": error.message})
     }
@@ -85,7 +89,7 @@ app.post('/api/users/:_id/exercises', async (req, res)=>{
 
 app.get('/api/users/:_id/logs', async (req, res)=>{
     try {
-        
+        let foundUser = User.findById
     } catch (error) {
         
     }
