@@ -23,9 +23,14 @@ const exerciseSchema = new mongoose.Schema({
     username: {
         type: String
     },
-    __v: {
-        type: Number,
-        select: false
+    description: {
+        type: String
+    },
+    duration: {
+        type: Number
+    },
+    date: {
+        type: String
     }
 })
 
@@ -59,21 +64,26 @@ app.get('/api/users', async (req, res)=>{
 
 })
 
-app.post('/api/users/:id/exercises', async (req, res)=>{
+app.post('/api/users/:_id/exercises', async (req, res)=>{
     try {
-        const {description, duration, date} = req.body
-        if(!date)date=new Date();
+        let {description, duration, date} = req.body
+        if(!date)date=new Date().toDateString();
         let newStuff = {
-            description, duration, date
+            description,
+            duration,
+            date
         }
-        let updatedUser = await User.findByIdAndUpdate({_id: req.params.id}, newStuff, {new: true})
-        res.json({"username": updatedUser.username, "description": updatedUser.description, "duration": updatedUser.duration, "date": updatedUser.date, "_id": updatedUser._id})
+        
+        let updatedUser = await User.findByIdAndUpdate({_id: req.params._id}, newStuff, {new: true})
+        res.json(updatedUser)
     } catch (error) {
         res.json({"error": error.message})
     }
     
     
 })
+
+
 
 app.listen(3000, ()=>{
     console.log('Server started on Port: 3000');
