@@ -7,8 +7,10 @@ require('dotenv').config()
 app.use(cors())
 app.use(express.json())
 app.use(logger('dev'))
+app.use(bodyParser.urlencoded({extended: true}))
 
 const mongoose = require('mongoose')
+const bodyParser = require('body-parser')
 
 mongoose
     .connect(process.env.MONGODB_URL)
@@ -21,17 +23,23 @@ mongoose
 
 const exerciseSchema = new mongoose.Schema({
     username: {
-        type: String
+        type: String,
+        required: true
     },
-    description: {
-        type: String
-    },
-    duration: {
-        type: Number
-    },
-    date: {
-        type: String
-    }
+    log: [{
+        description: {
+          type: String,
+          required: true
+        },
+        duration: {
+          type: Number,
+          required: true
+        },
+        date: {
+          type: Date,
+          required: true
+        }
+      }]
 })
 
 const User = mongoose.model('Exercise', exerciseSchema)
@@ -40,17 +48,25 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/views/index.html')
   });
 
-app.post('/api/users', async (req, res)=>{
-    try {
-        const {username} = req.body;
-        const newUser = new User({
-            username
-        })
-        let savedUser = await newUser.save();
-        res.json({username: savedUser.username, _id: savedUser._id})
-    } catch (error) {
-        
-    }
+app.post('/api/users',(req, res)=>{
+    User.findOne({username: req.body.username}, (err, doc)=>{
+        if (doc) {
+          res.json({
+            userame: doc.username,
+            _id: doc._id
+          })
+        } else {
+          User.create({
+            username: req.body.username,
+            log: []
+          })
+            .then(savedDoc=>{
+            res.json({
+              username: savedDoc.username,
+              _id: savedDoc._id
+            });
+          });
+        }
         
         
         
