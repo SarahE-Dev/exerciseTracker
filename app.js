@@ -42,10 +42,7 @@ app.post('/api/users', async (req, res)=>{
             username
         })
         await newUser.save()
-        res.json({
-            "username": newUser.username,
-            "_id": newUser._id
-        })
+        res.json(newUser)
     } catch (error) {
         res.json({"error": error.message})
     }
@@ -66,7 +63,10 @@ app.post('/api/users/:_id/exercises', async (req, res)=>{
     try {
         const {description, duration, date} = req.body
         if(!date)date=new Date();
-        let updatedUser = await User.findByIdAndUpdate({_id: req.params.id}, req.body, {new: true})
+        let newStuff = {
+            description, duration, date
+        }
+        let updatedUser = await User.findByIdAndUpdate({_id: req.params.id}, newStuff, {new: true})
         res.json(updatedUser)
     } catch (error) {
         res.json({"error": error.message})
