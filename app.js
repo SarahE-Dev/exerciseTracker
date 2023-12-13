@@ -44,15 +44,10 @@ app.get('/', (req, res) => {
   });
 
 app.post('/api/users', async (req, res)=>{
-    console.log(req.body);
    const {username} = req.body;
-   let foundUser = await User.findOne({username: req.body.username}).exec();
-   if(foundUser){
-    res.json({username: foundUser.username, _id: foundUser._id})
-   }else{
-    foundUser = await User.create({username})
-    res.json({username: foundUser.username, _id: foundUser._id})
-   }
+   let newUser = new User({username})
+   await newUser.save()
+   res.json(newUser)
 })
 
 app.get('/api/users', async (req, res)=>{
