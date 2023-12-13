@@ -27,20 +27,19 @@ const exerciseSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    log: [{
-        description: {
+    description: {
           type: String,
           required: true
         },
-        duration: {
+    duration: {
           type: Number,
           required: true
         },
-        date: {
+    date: {
           type: Date,
           required: true
         }
-      }]
+    
 })
 
 const User = mongoose.model('Exercise', exerciseSchema)
@@ -49,30 +48,15 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/views/index.html')
   });
 
-app.post('/api/users',(req, res)=>{
-    User.findOne({username: req.body.username}, (err, doc)=>{
-        if (doc) {
-          res.json({
-            userame: doc.username,
-            _id: doc._id
-          })
-        } else {
-          User.create({
-            username: req.body.username,
-            log: []
-          })
-            .then(savedDoc=>{
-            res.json({
-              username: savedDoc.username,
-              _id: savedDoc._id
-            });
-          });
-        }
-    })
-        
-        
-        
-    
+app.post('/api/users', async (req, res)=>{
+   const {username} = req.body;
+   let foundUser = await User.findOne({username});
+   if(foundUser){
+    res.json({username: foundUser.username, _id: foundUser._id})
+   }else{
+    foundUser = await User.create({username})
+    res.json({username: foundUser.username, _id: foundUser._id})
+   }
 })
 
 app.get('/api/users', async (req, res)=>{
@@ -87,29 +71,15 @@ app.get('/api/users', async (req, res)=>{
 })
 
 app.post('/api/users/:_id/exercises', async (req, res)=>{
-    try {
-        let {description, duration, date} = req.body
-        if(!date)date=new Date().toDateString();
-        let newStuff = {
-            description,
-            duration,
-            date
-        }
-        
-        let updatedUser = await User.findByIdAndUpdate({_id: req.params._id}, newStuff, {new: true})
-        let ObjectToSend = {
-            username: updatedUser.username,
-            description: updatedUser.description,
-            duration: parseInt(updatedUser.duration),
-            date: updatedUser.date,
-            _id: updatedUser._id
-        }
-        res.json(ObjectToSend)
-    } catch (error) {
-        res.json({"error": error.message})
+    let {duration, description, date} = req.body;
+    if(!date){
+        date = new Date()
+        date = date.toDateString()
     }
     
-    
+    let updated = {duration, description, date}
+    let foundUser = await User.findByIdAndUpdate({_id: req.params._id}, updated, {new: true})
+    res.json({foundUser})
 })
 
 app.get('/api/users/:_id/logs', async (req, res)=>{
