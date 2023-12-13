@@ -29,16 +29,16 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/views/index.html')
   });
 
-app.post('/api/users', (req, res)=>{
-   let newUser = new User({username: req.body.username})
-   newUser
-        .save()
-        .then((doc)=>{
-            res.json(doc)
-        })
-        .catch(err=>{
-            console.log(err);
-        })
+app.post('/api/users', async (req, res)=>{
+   const {username} = req.body
+   let newUser = await User.find({username: username});
+   if(newUser){
+    res.json({username: newUser.username, _id: newUser._id})
+   }else{
+    newUser = new User({username: username})
+    await newUser.save()
+    res.json({username: newUser.username, _id: newUser._id})
+   }
 })
 
 app.get('/api/users', async (req, res)=>{
@@ -55,13 +55,13 @@ app.get('/api/users', async (req, res)=>{
 app.post('/api/users/:_id/exercises', async (req, res)=>{
     let {duration, description, date} = req.body;
     if(!date){
-        date = new Date()
-        date = date.toDateString()
+        let realDate = new Date()
+    }else{
+        let realDate = new Date(date)
     }
-    
-    let updated = {duration, description, date}
-    let foundUser = await User.findByIdAndUpdate({_id: req.params._id}, updated, {new: true})
-    res.json({foundUser})
+    let numberDur = parseInt(duration)
+    let updatedUser = await User.findByIdAndUpdate({_id: req.params._id}, {description: description, duration: numberDur, date: realDate}, {new: true})
+    res.json({username, description, duration, date, _id})
 })
 
 app.get('/api/users/:_id/logs', async (req, res)=>{

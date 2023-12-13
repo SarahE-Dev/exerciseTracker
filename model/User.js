@@ -6,13 +6,13 @@ const exerciseSchema = new mongoose.Schema({
         unique: true
     },
     description: {
-          type: String,
+        type: String
     },
     duration: {
-          type: Number,
+        type: Number
     },
     date: {
-          type: Date,
+        type: Date
     }
     
 })
