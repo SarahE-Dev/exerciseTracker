@@ -86,9 +86,8 @@ app.post('/api/users/:_id/exercises', async (req, res)=>{
 
 app.get('/api/users/:_id/logs', async (req, res)=>{
     const {from, to, limit} = req.query
-    const {id} = req.params._id
     try {
-        const user = await User.findById(id)
+        const user = await User.findById(req.params._id)
         if(!user){
             res.json({message: 'could not find user'})
         }
@@ -106,14 +105,22 @@ app.get('/api/users/:_id/logs', async (req, res)=>{
             filter.date = dateObj
         }
         const exercises = await Exercise.find(filter).limit(+limit ?? 500)
-        const log = exercises.map(e=>({
+        if(!exercises){
+            let count = 0
+        }else{
+            count = exercises.length
+        }
+        let log = exercises.map(e=>({
             description: e.description,
             duration: e.duration,
             date: e.date.toDateString()
         }))
+        if(log === undefined){
+            log = []
+        }
         res.json({
             username: user.username,
-            count: exercises.length,
+            count: count,
             _id: user_id,
             log
         })
