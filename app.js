@@ -133,7 +133,7 @@ app.get('/api/users/:_id/logs', async (req, res)=>{
             log
         })
     } catch (error) {
-        
+        console.log('error');
     }
 })
 
