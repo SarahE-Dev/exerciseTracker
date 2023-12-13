@@ -31,8 +31,8 @@ app.get('/', (req, res) => {
 
 app.post('/api/users', async (req, res)=>{
    const {username} = req.body
-   let newUser = await User.find({username: username});
-   if(newUser){
+   let newUser = await User.findOne({username: username}).exec();
+   if(newUser !== null){
     res.json({username: newUser.username, _id: newUser._id})
    }else{
     newUser = new User({username: username})
