@@ -87,16 +87,17 @@ app.post('/api/users/:_id/exercises', async (req, res)=>{
 app.get('/api/users/:_id/logs', async (req, res)=>{
     const {from, to, limit} = req.query
     try {
-        const user = await User.findById(req.params._id)
+        const id = req.params._id
+        const user = await User.findById(id)
         if(!user){
-            res.json({message: 'could not find user'})
+            res.json({"message": "could not find user"})
         }
         let dateObj = {}
         if(from){
-            dateObj['$gte'] = new Date(from)
+            dateObj["$gte"] = new Date(from)
         }
         if(to){
-            dateObj['$lte'] = new Date(to)
+            dateObj["$lte"] = new Date(to)
         }
         let filter = {
             user_id: id
@@ -105,24 +106,16 @@ app.get('/api/users/:_id/logs', async (req, res)=>{
             filter.date = dateObj
         }
         const exercises = await Exercise.find(filter).limit(+limit ?? 500)
-        if(!exercises){
-            let count = 0
-        }else{
-            count = exercises.length
-        }
         let log = exercises.map(e=>({
             description: e.description,
             duration: e.duration,
             date: e.date.toDateString()
         }))
-        if(log === undefined){
-            log = []
-        }
         res.json({
             username: user.username,
-            count: count,
-            _id: user_id,
-            log
+            count: count ? exercises.length : 0,
+            _id: user._id,
+            log: log ? log : []
         })
     } catch (error) {
         console.log('error');
