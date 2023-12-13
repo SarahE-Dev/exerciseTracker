@@ -47,7 +47,7 @@ app.post('/api/users', async (req, res)=>{
    const {username} = req.body;
    let newUser = new User({username})
    await newUser.save()
-   res.json(newUser)
+   res.send({username: newUser.username, _id: newUser._id})
 })
 
 app.get('/api/users', async (req, res)=>{
