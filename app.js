@@ -60,7 +60,8 @@ app.post('/api/users/:_id/exercises', async (req, res)=>{
         let realDate = new Date(date)
     }
     let numberDur = parseInt(duration)
-    let updatedUser = await User.findByIdAndUpdate({_id: req.params._id}, {description: description, duration: numberDur, date: realDate}, {new: true})
+    let updatedUser = await User.findByIdAndUpdate({_id: req.params._id}, {description: description, duration: numberDur, date: realDate}, {new: true,
+    runValidators: true})
     res.json({username, description, duration, date, _id})
 })
 
