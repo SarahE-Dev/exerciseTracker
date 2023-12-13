@@ -75,7 +75,7 @@ app.post('/api/users/:_id/exercises', async (req, res)=>{
     try {
         const user = await User.findById(id)
         if(!user){
-            res.send('Could not find user.')
+            res.json({message: 'could not find user'})
         }else{
             const exerciseObj = new Exercise({
                 user_id: user._id,
