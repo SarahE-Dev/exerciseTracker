@@ -29,11 +29,16 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/views/index.html')
   });
 
-app.post('/api/users', async (req, res)=>{
-   const {username} = req.body;
-   let newUser = new User({username})
-   await newUser.save()
-   res.json(newUser)
+app.post('/api/users', (req, res)=>{
+   let newUser = new User({username: req.body.username})
+   newUser
+        .save()
+        .then((doc)=>{
+            res.json(doc)
+        })
+        .catch(err=>{
+            console.log(err);
+        })
 })
 
 app.get('/api/users', async (req, res)=>{
