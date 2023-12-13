@@ -47,7 +47,7 @@ app.post('/api/users', async (req, res)=>{
    const {username} = req.body;
    let newUser = new User({username})
    await newUser.save()
-   res.send({username: newUser.username, _id: newUser._id})
+   res.json(newUser)
 })
 
 app.get('/api/users', async (req, res)=>{
@@ -62,7 +62,6 @@ app.get('/api/users', async (req, res)=>{
 })
 
 app.post('/api/users/:_id/exercises', async (req, res)=>{
-    console.log(req.body);
     let {duration, description, date} = req.body;
     if(!date){
         date = new Date()
