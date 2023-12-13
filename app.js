@@ -24,6 +24,7 @@ mongoose
 const exerciseSchema = new mongoose.Schema({
     username: {
         type: String,
+        unique: true
     },
     description: {
           type: String,
