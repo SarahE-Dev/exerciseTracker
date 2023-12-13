@@ -11,6 +11,8 @@ app.use(logger('dev'))
 
 const mongoose = require('mongoose')
 
+const User = require('./model/User')
+
 
 mongoose
     .connect(process.env.MONGODB_URL)
@@ -21,24 +23,7 @@ mongoose
         console.log(e);
     })
 
-const exerciseSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        unique: true
-    },
-    description: {
-          type: String,
-    },
-    duration: {
-          type: Number,
-    },
-    date: {
-          type: Date,
-    }
-    
-})
 
-const User = mongoose.model('Exercise', exerciseSchema)
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/views/index.html')
