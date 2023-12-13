@@ -94,7 +94,6 @@ app.post('/api/users/:_id/exercises', async (req, res)=>{
         }
     } catch (error) {
         console.log(error);
-        res.send('there was an error')
     }
 })
 
@@ -104,8 +103,7 @@ app.get('/api/users/:_id/logs', async (req, res)=>{
     try {
         const user = await User.findById(id)
         if(!user){
-            res.send('could not find user');
-            return
+            res.json({message: 'could not find user'})
         }
         let dateObj = {}
         if(from){
