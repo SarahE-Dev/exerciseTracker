@@ -49,6 +49,7 @@ app.get('/', (req, res) => {
   });
 
 app.post('/api/users', async (req, res)=>{
+    console.log(req.body);
    const {username} = req.body;
    let foundUser = await User.findOne({username});
    if(foundUser){
@@ -71,6 +72,7 @@ app.get('/api/users', async (req, res)=>{
 })
 
 app.post('/api/users/:_id/exercises', async (req, res)=>{
+    console.log(req.body);
     let {duration, description, date} = req.body;
     if(!date){
         date = new Date()
