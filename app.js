@@ -33,13 +33,18 @@ app.get('/', (req, res) => {
   });
 
 app.post('/api/users', async (req, res)=>{
-   const userObject = new User({
-    username: req.body.username
-   })
-   
-   try {
-    const user = await userObject.save()
-    res.json(user)
+    try {
+        const foundUser = await User.find({username: req.body.username})
+        if(foundUser.length > 0){
+            res.json(foundUser)
+        }else{
+            const userObject = new User({
+                username: req.body.username
+               })
+            const user = await userObject.save()
+            res.json(user)
+        }
+        
    } catch (error) {
     console.log(error);
    }
@@ -113,12 +118,12 @@ app.get('/api/users/:_id/logs', async (req, res)=>{
         }))
         res.json({
             username: user.username,
-            count: count ? exercises.length : 0,
+            count: exercises.length,
             _id: user._id,
             log: log ? log : []
         })
     } catch (error) {
-        console.log('error');
+        console.log(error);
     }
 })
 
