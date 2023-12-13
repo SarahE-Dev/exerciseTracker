@@ -10,8 +10,7 @@ app.use(logger('dev'))
 
 
 const mongoose = require('mongoose')
-const bodyParser = require('body-parser')
-app.use(bodyParser.urlencoded({extended: true}))
+
 
 mongoose
     .connect(process.env.MONGODB_URL)
@@ -25,20 +24,16 @@ mongoose
 const exerciseSchema = new mongoose.Schema({
     username: {
         type: String,
-        required: true
     },
     description: {
           type: String,
-          required: true
-        },
+    },
     duration: {
           type: Number,
-          required: true
-        },
+    },
     date: {
           type: Date,
-          required: true
-        }
+    }
     
 })
 
@@ -51,7 +46,7 @@ app.get('/', (req, res) => {
 app.post('/api/users', async (req, res)=>{
     console.log(req.body);
    const {username} = req.body;
-   let foundUser = await User.findOne({username});
+   let foundUser = await User.findOne({username: req.body.username}).exec();
    if(foundUser){
     res.json({username: foundUser.username, _id: foundUser._id})
    }else{
@@ -86,7 +81,7 @@ app.post('/api/users/:_id/exercises', async (req, res)=>{
 
 app.get('/api/users/:_id/logs', async (req, res)=>{
     try {
-        let foundUser = User.findById
+        
     } catch (error) {
         
     }
